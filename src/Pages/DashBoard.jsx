@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
@@ -10,12 +10,33 @@ import arr from "../assets/AltArrow.svg";
 import CreateModal from "../Components/CreateModal";
 import UpdateModal from "../Components/UpdateModal";
 import DropDown3 from "../Components/SuccessModal";
+import { TasksContext } from "../context/tasksContext.jsx";
 
 const DashBoard = () => {
-  // Modal state management
   const [showModal1, setShowModal1] = useState(false); // Create New Task
   const [showModal2, setShowModal2] = useState(false); // Update Task
   const [showModal3, setShowModal3] = useState(false); // Task Success
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const { tasks, getAllTasks, createTask, updateTask, deleteTask } =
+    useContext(TasksContext);
+
+  useEffect(() => {
+    getAllTasks();
+  }, []);
+
+  const handleEdit = (task) => {
+    setSelectedTask(task);
+    setShowModal2(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteTask(id);
+    } catch (error) {
+      console.error("Task delete failed", error);
+    }
+  };
 
   return (
     <div className="px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 flex flex-col overflow-hidden w-full max-w-full gap-4 sm:gap-6 md:gap-8 lg:gap-10 relative">
@@ -76,7 +97,7 @@ const DashBoard = () => {
           </div>
 
           {/* Task Rows */}
-          <TaskRow className="" />
+          <TaskRow tasks={tasks} onEdit={handleEdit} onDelete={handleDelete} />
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row justify-between px-4 md:px-[30px] py-3 md:py-[10px] items-center gap-2 sm:gap-0">
@@ -104,6 +125,7 @@ const DashBoard = () => {
           <CreateModal
             closeModal={() => setShowModal1(false)}
             openNextModal={() => setShowModal3(true)}
+            createTask={createTask}
           />
         </div>
       )}
@@ -112,6 +134,8 @@ const DashBoard = () => {
           <UpdateModal
             closeModal={() => setShowModal2(false)}
             openNextModal={() => setShowModal3(true)}
+            task={selectedTask}
+            updateTask={updateTask}
           />
         </div>
       )}

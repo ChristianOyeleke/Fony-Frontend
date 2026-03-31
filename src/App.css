@@ -24,6 +24,8 @@ body {
   margin: 0 auto;
 }
 
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Beastly&display=swap");
+
 /* Custom scrollbar hidden for carousel */
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
@@ -32,7 +34,6 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-@import url("https://fonts.googleapis.com/css2?family=Rubik+Beastly&display=swap");
 
 .rubik-beastly-regular {
   font-family: "Rubik Beastly", system-ui;

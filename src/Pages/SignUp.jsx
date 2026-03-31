@@ -1,15 +1,126 @@
-import { useState } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
+import { toast } from "react-toastify";
 import Logo from "../assets/Frame.svg";
 import Run from "../assets/run.svg";
 import Google from "../assets/material.svg";
-import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const iconClass = "text-gray-700 hover:text-gray-900 w-5 h-5"; // size + color like SVG
+  const { register, googleAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  const handleGoogleResponse = useCallback(
+    async (response) => {
+      if (!response?.credential) {
+        toast.error("Google signup failed. Please try again.");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await googleAuth({ token: response.credential });
+        navigate("/dashboard");
+      } catch (err) {
+        console.error("Google signup error:", err);
+        toast.error(err.response?.data?.message || "Google signup failed");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [googleAuth, navigate],
+  );
+
+  const handleGoogleSignup = () => {
+    if (!googleClientId || googleClientId === "your_google_client_id_here") {
+      toast.error(
+        "Google Client ID is not configured. Add VITE_GOOGLE_CLIENT_ID to .env.",
+      );
+      return;
+    }
+
+    if (!window.google) {
+      toast.error("Google SDK is still loading. Please refresh the page.");
+      return;
+    }
+
+    window.google.accounts.id.prompt();
+  };
+
+  useEffect(() => {
+    if (!googleClientId) return;
+
+    const initializeGoogle = () => {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+      }
+    };
+
+    if (window.google?.accounts?.id) {
+      initializeGoogle();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = initializeGoogle;
+    document.body.appendChild(script);
+
+    return () => {
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+  }, [googleClientId, handleGoogleResponse]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!name || !email || !phone || !password || !confirmPassword) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await register({ name, email, phone, password });
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      const backendError =
+        err.response?.data?.message ||
+        err.response?.data ||
+        err.message ||
+        "Registration failed";
+      toast.error(backendError);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const iconClass = "text-gray-700 hover:text-gray-900 w-5 h-5";
 
   return (
     <div className="flex gap-[20px]">
@@ -25,7 +136,7 @@ const SignUp = () => {
 
         <p className="mb-6">Enter your details to create your account.</p>
 
-        <form className="flex flex-col gap-[11px]">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[11px]">
           {/* EMAIL */}
           <div>
             <label>Email</label>
@@ -34,6 +145,10 @@ const SignUp = () => {
               type="email"
               placeholder="Enter Email"
               className="mt-1 mb-[11px] h-[56px] w-[484px] rounded-[48px] border px-4 py-3"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
             />
           </div>
 
@@ -45,6 +160,25 @@ const SignUp = () => {
               type="text"
               placeholder="Enter your name"
               className="mt-1 mb-[11px] h-[56px] w-[484px] rounded-[48px] border px-4 py-3"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
+
+          {/* PHONE */}
+          <div>
+            <label>Phone Number</label>
+            <span className="text-[#A4003A]">*</span>
+            <input
+              type="tel"
+              placeholder="Enter phone number (e.g. 08012345678)"
+              className="mt-1 mb-[11px] h-[56px] w-[484px] rounded-[48px] border px-4 py-3"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={loading}
+              required
             />
           </div>
 
@@ -58,6 +192,10 @@ const SignUp = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 className="mt-1 h-[56px] w-[484px] rounded-[48px] border px-4 py-3 pr-12"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                required
               />
 
               <button
@@ -85,6 +223,10 @@ const SignUp = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Re-enter password"
                 className="mt-1 h-[56px] w-[484px] rounded-[48px] border px-4 py-3 pr-12"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={loading}
+                required
               />
 
               <button
@@ -105,9 +247,12 @@ const SignUp = () => {
           {/* SUBMIT */}
           <button
             type="submit"
-            className="mt-[24px] mb-[30px] h-[56px] w-[484px] rounded-[48px] border-[2px] border-black bg-[#77C2FF] px-[12px] py-[19px] text-white shadow-[0_4px_0_0_black]"
+            disabled={loading}
+            className={`mt-[24px] mb-[30px] h-[56px] w-[484px] rounded-[48px] border-[2px] border-black bg-[#77C2FF] px-[12px] py-[19px] text-white shadow-[0_4px_0_0_black] ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-400"
+            }`}
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
 
           {/* OR */}
@@ -119,13 +264,15 @@ const SignUp = () => {
           </div>
 
           {/* GOOGLE */}
-          <button className="flex h-[60px] w-[484px] items-center justify-center rounded-[48px] border border-[#D9D9D9] hover:bg-[#D9D9D9]">
-            <img
-              src={Google}
-              alt="Google"
-              className="mr-2 h-[24px] w-[24px] font-bold"
-            />
-            <Link>Continue with Google</Link>
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            className="flex h-[60px] w-[484px] items-center justify-center rounded-[48px] border border-[#D9D9D9] hover:bg-[#D9D9D9]"
+          >
+            <img src={Google} alt="Google" className="mr-2 h-[24px] w-[24px]" />
+            <span className="font-semibold text-gray-700">
+              Continue with Google
+            </span>
           </button>
         </form>
 
