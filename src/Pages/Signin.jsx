@@ -12,6 +12,7 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const { login, googleAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -84,12 +85,25 @@ const Signin = () => {
     };
   }, [googleClientId, handleGoogleResponse]);
 
+  const validateForm = () => {
+    const newErrors = {};
+    const emailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!emailRegex.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill all fields");
-      return;
-    }
+    if (!validateForm()) return;
     setLoading(true);
     try {
       await login({ email, password });
@@ -104,9 +118,9 @@ const Signin = () => {
   const iconClass = "text-gray-700 hover:text-gray-900 w-5 h-5";
 
   return (
-    <div className="flex gap-[20px]">
+    <div className="flex flex-col lg:flex-row gap-6 px-4 lg:px-0 lg:gap-[20px] min-h-screen items-center justify-center py-8">
       {/* LEFT SIDE */}
-      <div className="flex flex-col pl-[100px]">
+      <div className="flex flex-col w-full lg:pl-[100px] max-w-md mx-auto lg:mx-0 order-2 lg:order-1 px-4 lg:px-0">
         <div className="flex items-center gap-2 mt-[70px] mb-4">
           <img src={Logo} alt="Logo" />
         </div>
@@ -125,12 +139,15 @@ const Signin = () => {
             <input
               type="email"
               placeholder="Enter Email"
-              className="w-[484px] h-[56px] mt-1 px-4 py-3 border rounded-[48px] outline-none focus:border-blue-400"
+              className="w-full h-[56px] mt-1 px-4 py-3 border rounded-[48px] outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
           {/* PASSWORD */}
@@ -142,12 +159,16 @@ const Signin = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter Your Password"
-                className="w-[484px] h-[56px] px-4 py-3 border rounded-[48px] pr-12 outline-none focus:border-blue-400"
+                className="w-full h-[56px] px-4 py-3 border rounded-[48px] pr-12 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
+                maxLength={128}
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
@@ -174,7 +195,7 @@ const Signin = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-[484px] h-[56px] bg-[#77C2FF] text-white rounded-[48px] border-[2px] border-[#000000] shadow-[0_4px_0_0_black] mb-[30px] font-bold transition-all active:shadow-none active:translate-y-1 ${
+            className={`w-full h-[56px] bg-[#77C2FF] text-white rounded-[48px] border-[2px] border-[#000000] shadow-[0_4px_0_0_black] mb-[30px] font-bold transition-all active:shadow-none active:translate-y-1 ${
               loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-400"
             }`}
           >
@@ -182,7 +203,7 @@ const Signin = () => {
           </button>
 
           {/* OR divider */}
-          <div className="relative my-4 w-[484px]">
+          <div className="relative my-4 w-full max-w-md mx-auto">
             <div className="border-t border-[#D9D9D9]" />
             <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-white px-3 text-sm text-[#666666]">
               Or
@@ -193,7 +214,7 @@ const Signin = () => {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex items-center justify-center w-[484px] h-[60px] border border-[#D9D9D9] rounded-[48px] py-2 hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-center w-full h-[60px] border border-[#D9D9D9] rounded-[48px] py-2 hover:bg-gray-50 transition-colors"
           >
             <img src={Google} alt="" className="w-[24px] h-[24px] mr-2" />
             <span className="font-semibold text-gray-700">
@@ -203,7 +224,7 @@ const Signin = () => {
         </form>
 
         {/* SIGN UP LINK */}
-        <div className="flex items-center justify-center font-medium m-6 w-[484px]">
+        <div className="flex items-center justify-center font-medium m-6 w-full max-w-md mx-auto">
           <p>
             Don’t have an account?{" "}
             <Link
@@ -217,11 +238,11 @@ const Signin = () => {
       </div>
 
       {/* RIGHT SIDE IMAGE */}
-      <div className="mt-[30px] hidden lg:block">
+      <div className="w-full lg:w-auto order-1 lg:order-2 mt-8 lg:mt-[30px] lg:block max-w-4xl mx-auto lg:mx-0">
         <img
           src={Run}
           alt="Illustration"
-          className="w-[836px] h-[724px] object-cover rounded-l-2xl"
+          className="w-full h-96 lg:w-[836px] lg:h-[724px] object-cover shadow-lg"
         />
       </div>
     </div>

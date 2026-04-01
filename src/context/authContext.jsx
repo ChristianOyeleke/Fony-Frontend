@@ -68,6 +68,24 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // UPDATE PROFILE
+  const updateProfile = async (formData) => {
+    try {
+      const { data } = await api.put("/api/auth/profile", formData);
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+      toast.success("Profile updated successfully");
+      return data.user;
+    } catch (err) {
+      console.error(
+        "Update profile error:",
+        err.response?.data || err.message || err,
+      );
+      throw err;
+    }
+  };
+
   //LOGOUT
   const logout = () => {
     localStorage.removeItem("token");
@@ -83,6 +101,7 @@ const AuthProvider = ({ children }) => {
         register,
         login,
         googleAuth,
+        updateProfile,
         logout,
       }}
     >

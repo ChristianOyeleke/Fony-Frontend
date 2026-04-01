@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import flex1 from "../assets/flex1.svg";
 import flex2 from "../assets/flex2.svg";
 import flex3 from "../assets/flex3.svg";
@@ -13,19 +14,26 @@ import instagram from "../assets/instagram.svg";
 import twitter from "../assets/twitter.svg";
 import tiktok from "../assets/tiktok.svg";
 import LandingNavBar from "../Components/LandingNavBar";
-import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    if (window.location.hash === "#testimonials") {
+      const element = document.getElementById("testimonials");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-white font-sans text-black overflow-x-hidden">
       <LandingNavBar />
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-between gap-12">
+      <section className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col md:flex-row items-center justify-between gap-12">
         <div className="flex-1 text-center md:text-left">
-          <h1 className="font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8">
+          <h1 className="font-black font-rackety text-4xl sm:text-7xl md:text-8xl lg:text-7xl leading-[1.1] mb-8">
             Organize What <br className="hidden lg:block" /> Matters, Move At{" "}
             <br className="hidden lg:block" /> Your Own Pace
           </h1>
@@ -55,7 +63,7 @@ const LandingPage = () => {
 
       {/* Features Header */}
       <div className="text-center py-12">
-        <h2 className="font-black text-3xl md:text-5xl leading-tight">
+        <h2 className="font-black font-rackety text-3xl md:text-5xl leading-tight">
           A Simple Way To <br /> Manage Your Tasks
         </h2>
       </div>
@@ -68,10 +76,10 @@ const LandingPage = () => {
             <img className="w-48 md:w-64 object-contain" src={flex2} alt="" />
           </div>
           <div className="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
-            <h3 className="text-2xl md:text-4xl font-black mb-4">
+            <h3 className="text-2xl md:text-4xl font-black mb-4 font-rackety">
               Create Your Tasks
             </h3>
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-700 leading-relaxed ">
               Add What Matters, When It Matters Big Goals Or Small Wins, All In
               One Place.
             </p>
@@ -84,7 +92,7 @@ const LandingPage = () => {
             <img className="w-48 md:w-64 object-contain" src={flex3} alt="" />
           </div>
           <div className="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
-            <h3 className="text-2xl md:text-4xl font-black mb-4">
+            <h3 className="text-2xl md:text-4xl font-black mb-4 font-rackety">
               Update As You Go
             </h3>
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
@@ -99,7 +107,7 @@ const LandingPage = () => {
             <img className="w-48 md:w-64 object-contain" src={flex4} alt="" />
           </div>
           <div className="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center text-center md:text-left">
-            <h3 className="text-2xl md:text-4xl font-black mb-4">
+            <h3 className="text-2xl md:text-4xl font-black mb-4 font-rackety">
               Get Things Done, Better
             </h3>
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
@@ -111,8 +119,8 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-white py-20 px-6">
-        <h2 className="text-center font-black text-3xl md:text-5xl mb-16">
+      <section id="testimonials" className="bg-white py-20 px-6">
+        <h2 className="text-center font-black text-4xl md:text-6xl mb-16 font-rackety">
           Loved By People Who <br /> Get Things Done
         </h2>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -123,7 +131,7 @@ const LandingPage = () => {
               className="w-16 h-16 rounded-full mb-4 border border-black"
               alt=""
             />
-            <h4 className="font-black text-xl">OlaChi Maryam</h4>
+            <h4 className="font-black text-4xl font-rackety">OlaChi Maryam</h4>
             <p className="text-sm md:text-base px-4">
               This App Completely Changed How I Plan My Day. Creating Tasks Is
               Simple, Updating Them Feels Effortless, And I Actually Finish What
@@ -133,8 +141,8 @@ const LandingPage = () => {
 
           {/* Item 2 - Stats */}
           <div className="aspect-square border-2 border-black border-b-8 rounded-[170px] bg-white flex flex-col items-center justify-center p-8 text-center">
-            <span className="text-6xl font-black italic">32%</span>
-            <p className="font-bold mt-2">Increase In Task Completion Rate</p>
+            <span className="text-8xl font-black italic font-rackety">32%</span>
+            <p className="mt-2">Increase In Task Completion Rate</p>
           </div>
 
           {/* Item 3 - Circular Profile */}
@@ -144,7 +152,7 @@ const LandingPage = () => {
               className="w-16 h-16 rounded-full mb-4 border border-black"
               alt=""
             />
-            <h4 className="font-black text-xl">Joseph Ibrahim</h4>
+            <h4 className="font-black text-4xl font-rackety">Joseph Ibrahim</h4>
             <p className="text-sm md:text-base px-4">
               I Love How Organized Everything Feels Without Being Overwhelming.
               It Fits Perfectly Into My Daily Routine And Keeps Me Focused.
@@ -153,8 +161,8 @@ const LandingPage = () => {
 
           {/* Row 2 - Items */}
           <div className="aspect-square border-2 border-black border-b-8 rounded-[170px] bg-white flex flex-col items-center justify-center p-8 text-center">
-            <span className="text-6xl font-black italic">3X</span>
-            <p className="font-bold mt-2">Better Daily Focus And Consistency</p>
+            <span className="text-8xl font-black italic font-rackety">3X</span>
+            <p className="mt-2">Better Daily Focus And Consistency</p>
           </div>
 
           <div className="aspect-square border-2 border-black border-b-8 rounded-[170px] bg-[#F6FBFF] flex flex-col items-center justify-center p-8 text-center">
@@ -163,7 +171,7 @@ const LandingPage = () => {
               className="w-16 h-16 rounded-full mb-4 border border-black"
               alt=""
             />
-            <h4 className="font-black text-xl">Wasiu David</h4>
+            <h4 className="font-black text-4xl font-rackety">Wasiu David</h4>
             <p className="text-sm md:text-base px-4">
               Managing My Tasks Used To Be Stressful, But This Makes It Feel
               Calm And Intentional. I Get More Done With Less Pressure.
@@ -171,8 +179,10 @@ const LandingPage = () => {
           </div>
 
           <div className="aspect-square border-2 border-black border-b-8 rounded-[170px] bg-white flex flex-col items-center justify-center p-8 text-center">
-            <span className="text-5xl font-black italic">2.5 Hours</span>
-            <p className="font-bold mt-2">Saved Per Week On Planning</p>
+            <span className="text-8xl font-black italic font-rackety">
+              2.5 Hours
+            </span>
+            <p className=" mt-2">Saved Per Week On Planning</p>
           </div>
         </div>
       </section>
@@ -181,7 +191,9 @@ const LandingPage = () => {
       <section className="max-w-6xl mx-auto px-6 mb-24">
         <div className="flex flex-col md:flex-row border-2 border-black border-b-8 rounded-[170px] md:rounded-full overflow-hidden">
           <div className="w-full md:w-1/2 p-10 md:p-20 flex flex-col justify-center">
-            <h3 className="text-3xl font-black mb-4">Stay In The Loop</h3>
+            <h3 className="text-5xl font-black mb-4 font-rackety">
+              Stay In The Loop
+            </h3>
             <p className="mb-8 text-gray-700">
               Get Simple, Practical Insights On Productivity, Design, And
               Building Better Digital Experiences Delivered Straight To Your

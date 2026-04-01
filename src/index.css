@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Rackety";
+  src: url("./font/Rackety.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer utilities {
+  .font-rackety {
+    font-family: "Rackety", cursive;
+  }
+}

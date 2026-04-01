@@ -11,19 +11,21 @@ import CreateModal from "../Components/CreateModal";
 import UpdateModal from "../Components/UpdateModal";
 import DropDown3 from "../Components/SuccessModal";
 import { TasksContext } from "../context/tasksContext.jsx";
+import { AuthContext } from "../context/authContext.jsx";
 
 const DashBoard = () => {
-  const [showModal1, setShowModal1] = useState(false); // Create New Task
-  const [showModal2, setShowModal2] = useState(false); // Update Task
-  const [showModal3, setShowModal3] = useState(false); // Task Success
+  const [showModal1, setShowModal1] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [showModal3, setShowModal3] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
   const { tasks, getAllTasks, createTask, updateTask, deleteTask } =
     useContext(TasksContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     getAllTasks();
-  }, []);
+  }, [getAllTasks]);
 
   const handleEdit = (task) => {
     setSelectedTask(task);
@@ -33,114 +35,108 @@ const DashBoard = () => {
   const handleDelete = async (id) => {
     try {
       await deleteTask(id);
+      getAllTasks();
     } catch (error) {
       console.error("Task delete failed", error);
     }
   };
 
   return (
-    <div className="px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 flex flex-col overflow-hidden w-full max-w-full gap-4 sm:gap-6 md:gap-8 lg:gap-10 relative">
-      {/* Header */}
-      <div className="flex flex-col xs:flex-row items-start xs:items-center py-4 sm:py-5 md:py-[30px] justify-between gap-3 sm:gap-4 xs:gap-0 w-full">
-        <h3 className="font-[Caveat] font-bold text-lg xs:text-xl sm:text-2xl md:text-[30px] lg:text-[35px] 3xl:text-[40px] leading-[100%]">
-          Welcome back! Fawas
+    <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto flex flex-col gap-6">
+      {/* ================= HEADER ================= */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h3 className="font-rackety font-bold text-xl md:text-2xl lg:text-3xl">
+          Welcome back, {user?.name || "User"}
         </h3>
+
         <button
-          className="w-full xs:w-[140px] sm:w-[163px] lg:w-[180px] flex h-[40px] lg:h-[45px] font-[Caveat] rounded-[22px] px-2 sm:px-3 md:px-[10px] py-2 md:py-[19px] bg-[#77C2FF] border-[1px] shadow-[0_4px_0_0_black] items-center justify-center text-sm xs:text-base"
           onClick={() => setShowModal1(true)}
+          className="px-4 py-2 rounded-full bg-[#77C2FF] shadow-[0_4px_0_0_black] text-sm md:text-base"
         >
-          Create new task
+          + Create Task
         </button>
       </div>
 
-      {/* Task Summary Cards */}
+      {/* ================= SUMMARY + CAROUSEL ================= */}
       <TaskSummaryCard />
 
-      {/* Tasks Carousel */}
       <Carousel />
-
-      {/* All Created Tasks Table */}
-      <div className="flex flex-col gap-4 md:gap-[20px]">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
-          <h2 className="text-xl sm:text-2xl md:text-[30px] font-[Caveat] font-bold leading-[100%]">
-            All Created Tasks
+      {/* ================= TASK TABLE ================= */}
+      <div className="flex flex-col gap-4">
+        {/* Top Bar */}
+        <div className="flex justify-between items-center">
+          <h2 className="font-rackety text-xl md:text-2xl font-bold">
+            All Tasks
           </h2>
-          <div className="flex gap-[10px] h-[44px] justify-center items-center">
-            <p className="font-md leading-[20px] text-sm md:text-base">
-              Priority
-            </p>
-            <div className="border-[1px] flex justify-center items-center w-[86px] h-[44px] rounded-[22px]">
-              <p className="text-sm md:text-base">All</p>
-              <img src={arr} alt="" className="w-[24px] h-[24px]" />
-            </div>
+
+          <div className="flex items-center gap-2 border px-3 py-2 rounded-full">
+            <span className="text-sm md:text-base">Priority</span>
+            <img src={arr} alt="" className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="h-auto md:h-[842px] rounded-[30px] border-[1px] border-b-[4px] mb-10 md:mb-[94px] shadow-[0_4px_0_0_black] overflow-hidden">
-          {/* Table Header - Hidden on mobile, shown on md+ */}
-          <div className="hidden md:flex bg-[#FBFBFB]">
-            <p className="w-[403px] py-[21px] px-[30px] h-[70px] font-semibold text-[20px] leading-[20px]">
-              Name
-            </p>
-            <p className="w-[146px] py-[21px] px-[30px] h-[70px] font-semibold text-[20px] leading-[20px]">
-              Priority
-            </p>
-            <p className="w-[236px] py-[21px] px-[30px] h-[70px] font-semibold text-[20px] leading-[20px]">
-              Date
-            </p>
-            <p className="w-[236px] py-[21px] px-[30px] h-[70px] font-semibold text-[20px] leading-[20px]">
-              Status
-            </p>
-            <p className="w-[237px] py-[21px] px-[30px] h-[70px] font-semibold text-[20px] leading-[20px]">
-              More Action
-            </p>
+        {/* Table Container */}
+        <div className="rounded-2xl border shadow overflow-hidden">
+          {/* Table Header */}
+          <div className="hidden md:grid grid-cols-5 bg-[#FBFBFB] p-4 font-semibold">
+            <p>Name</p>
+            <p>Priority</p>
+            <p>Date</p>
+            <p>Status</p>
+            <p>Action</p>
           </div>
 
           {/* Task Rows */}
           <TaskRow tasks={tasks} onEdit={handleEdit} onDelete={handleDelete} />
 
           {/* Pagination */}
-          <div className="flex flex-col sm:flex-row justify-between px-4 md:px-[30px] py-3 md:py-[10px] items-center gap-2 sm:gap-0">
-            <p className="text-sm md:text-base">Showing 10 of 20</p>
-            <div className="flex items-center gap-[10px]">
-              <div className="border-[1px] rounded-[20px] p-1">
-                <MdOutlineKeyboardArrowLeft className="w-[24px] h-[24px]" />
-              </div>
-              {[1, 2, 3, 4].map((num) => (
-                <p key={num} className="text-sm md:text-base">
-                  {num}
-                </p>
+          <div className="flex flex-col sm:flex-row justify-between items-center p-4 text-sm">
+            <p>Showing {tasks?.length || 0} tasks</p>
+
+            <div className="flex items-center gap-2">
+              <MdOutlineKeyboardArrowLeft />
+              {[1, 2, 3, 4].map((n) => (
+                <span key={n}>{n}</span>
               ))}
-              <div className="border-[1px] rounded-[20px] p-1">
-                <MdOutlineKeyboardArrowRight className="w-[24px] h-[24px]" />
-              </div>
+              <MdOutlineKeyboardArrowRight />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modals */}
+      {/* ================= MODALS ================= */}
       {showModal1 && (
-        <div className="fixed top-0 left-0 right-0 mx-auto z-50">
+        <div className="fixed inset-0 flex justify-center items-start pt-10 bg-black/30 z-50">
           <CreateModal
             closeModal={() => setShowModal1(false)}
-            openNextModal={() => setShowModal3(true)}
+            openNextModal={() => {
+              setShowModal1(false);
+              setShowModal3(true);
+              getAllTasks();
+            }}
             createTask={createTask}
           />
         </div>
       )}
+
       {showModal2 && (
-        <div className="fixed top-0 left-0 right-0 mx-auto z-50">
+        <div className="fixed inset-0 flex justify-center items-start pt-10 bg-black/30 z-50">
           <UpdateModal
             closeModal={() => setShowModal2(false)}
-            openNextModal={() => setShowModal3(true)}
+            openNextModal={() => {
+              setShowModal2(false);
+              setShowModal3(true);
+              setSelectedTask(null);
+              getAllTasks();
+            }}
             task={selectedTask}
             updateTask={updateTask}
           />
         </div>
       )}
+
       {showModal3 && (
-        <div className="fixed top-[100px] left-0 right-0 mx-auto z-50">
+        <div className="fixed inset-0 flex justify-center items-start pt-20 z-50">
           <DropDown3 closeModal={() => setShowModal3(false)} />
         </div>
       )}

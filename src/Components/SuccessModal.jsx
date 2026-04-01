@@ -20,9 +20,11 @@ const SuccessModal = ({ closeModal }) => {
         </div>
 
         <div className="mt-6">
-          <h1 className="text-[30px] font-bold">Task Created Successfully</h1>
+          <h1 className="text-[30px] font-bold font-rackety">
+            Task Created Successfully
+          </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-2 font-rackety">
             Your task has been created successfully.
           </p>
         </div>

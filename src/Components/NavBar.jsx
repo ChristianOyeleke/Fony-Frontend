@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../assets/Logo.svg";
 import { IoIosArrowDown } from "react-icons/io";
 import profileImage from "../assets/FB_IMG_16265830618836469 1.png";
 import ProfileDropDown from "./ProfileDropDown";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const profilePicture = user?.profilePicture || profileImage;
 
   return (
     <div className="flex relative z-10 justify-between h-auto md:h-[100px] px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 py-3 sm:py-4 md:py-[30px] border-b-[1px] border-[#D9D9D9] w-full max-w-full">
@@ -40,22 +43,22 @@ const NavBar = () => {
       {/* Desktop Navigation */}
       <div className="hidden md:flex font-md font-[Montserrat] justify-between text-sm md:text-[16px] lg:w-[350px] xl:w-[377px] h-[40px] items-center text-center leading-[20px] z-10">
         <p
-          className="bg-[#77C2FF] w-[100px] md:w-[124px] h-[40px] rounded-[22px] text-center py-[10px] px-[15px] md:px-[19px] cursor-pointer hover:bg-[#5bb3f0] transition-colors"
-          onClick={() => navigate("/dashboard")}
+          className="bg-[#77C2FF] w-[90px] md:w-[108px] h-[40px] rounded-[22px] text-center py-[10px] px-[15px] md:px-[19px] cursor-pointer hover:bg-[#5bb3f0] transition-colors"
+          onClick={() => navigate("/")}
         >
-          Dashboard
+          Home
         </p>
         <p
-          className="bg-[#F1F1F180] w-[90px] md:w-[108px] h-[40px] rounded-[22px] text-center py-[10px] px-[15px] md:px-[19px] cursor-pointer hover:bg-[#e0e0e0] transition-colors"
-          onClick={() => navigate("/dashboard")}
+          className="bg-[#F1F1F180] w-[100px] md:w-[124px] h-[40px] rounded-[22px] text-center py-[10px] px-[15px] md:px-[19px] cursor-pointer hover:bg-[#e0e0e0] transition-colors"
+          onClick={() => navigate("/signup")}
         >
-          Ongoing
+          How to Get Started
         </p>
         <p
           className="bg-[#F1F1F180] w-[100px] md:w-[125px] h-[40px] rounded-[22px] text-center py-[10px] px-[15px] md:px-[19px] cursor-pointer hover:bg-[#e0e0e0] transition-colors"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/#testimonials")}
         >
-          Completed
+          Testimonials
         </p>
       </div>
 
@@ -66,13 +69,13 @@ const NavBar = () => {
           onClick={() => setIsOpen(!isOpen)}
         >
           <img
-            src={profileImage}
+            src={profilePicture}
             alt="Profile"
             className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover border border-gray-100 shadow-sm"
           />
-          <IoIosArrowDown
-            className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-          />
+          <span className="hidden lg:block font-medium text-gray-900">
+            {user?.name || "User"}
+          </span>
         </div>
 
         {isOpen && (
@@ -89,29 +92,29 @@ const NavBar = () => {
             <p
               className="bg-[#77C2FF] w-full h-[40px] rounded-[22px] text-center py-[10px] cursor-pointer"
               onClick={() => {
-                navigate("/dashboard");
+                navigate("/");
                 setIsMobileMenuOpen(false);
               }}
             >
-              Dashboard
+              Home
             </p>
             <p
               className="bg-[#F1F1F180] w-full h-[40px] rounded-[22px] text-center py-[10px] cursor-pointer"
               onClick={() => {
-                navigate("/dashboard");
+                navigate("/signup");
                 setIsMobileMenuOpen(false);
               }}
             >
-              Ongoing
+              How to Get Started
             </p>
             <p
               className="bg-[#F1F1F180] w-full h-[40px] rounded-[22px] text-center py-[10px] cursor-pointer"
               onClick={() => {
-                navigate("/dashboard");
+                navigate("/#testimonials");
                 setIsMobileMenuOpen(false);
               }}
             >
-              Completed
+              Testimonials
             </p>
           </div>
           <div
@@ -119,7 +122,7 @@ const NavBar = () => {
             onClick={() => setIsOpen(!isOpen)}
           >
             <img
-              src={profileImage}
+              src={profilePicture}
               alt="Profile"
               className="h-10 w-10 rounded-full object-cover border border-gray-100 shadow-sm"
             />
