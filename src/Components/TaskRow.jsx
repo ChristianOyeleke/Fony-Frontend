@@ -84,46 +84,47 @@ const TaskRow = ({ tasks = [], onEdit, onDelete }) => {
           tasks.map((task, index) => (
             <div
               key={task._id || index}
-              className={`flex h-[70px] items-center border-b-[1px] ${index % 2 === 0 ? "" : "bg-[#F6FBFF]"}`}
+              className={`grid grid-cols-5 items-center p-4 border-b ${
+                index % 2 !== 0 ? "bg-[#F6FBFF]" : ""
+              }`}
             >
-              <p className="text-[20px] py-[21px] px-[30px] w-[390px] font-semibold font-[Montserrat] tracking-[-3%] leading-[20px]">
-                {task.title}
+              {/* NAME */}
+              <p className="font-semibold text-base truncate">{task.title}</p>
+
+              {/* PRIORITY */}
+              <p
+                className={`text-xs px-3 py-1 rounded-full text-center w-fit ${priorityClasses[task.priority?.toLowerCase()]}`}
+              >
+                {formatPriority(task.priority)}
               </p>
-              <div className="py-[21px] px-[30px] flex justify-center w-[146px]">
-                <p
-                  className={`leading-[20px] w-[86px] flex items-center justify-center font-md rounded-[20px] px-[10px] pb-[4px] text-center ${priorityClasses[task.priority?.toLowerCase()]}`}
-                >
-                  {formatPriority(task.priority)}
-                </p>
-              </div>
-              <p className="text-[20px] py-[21px] px-[30px] w-[237px] font-semibold font-[Montserrat] tracking-[-3%] leading-[20px]">
-                {formatDate(task.dueDate)}
-              </p>
-              <div className="py-[21px] px-[30px] w-[237px]">
-                <div className="flex gap-[4px] w-[177px] h-[28px]">
-                  <div className="w-[134px] h-[26px] border-[1px] flex items-center border-solid rounded-[170px] overflow-hidden">
-                    <div
-                      className="bg-[#77C2FF] h-[24px] rounded-[170px]"
-                      style={{ width: `${task.progress || 0}%` }}
-                    ></div>
-                  </div>
-                  <p className="font-md text-[20px] leading-[20px]">
-                    {task.progress ?? 0}%
-                  </p>
+
+              {/* DATE */}
+              <p className="text-sm">{formatDate(task.dueDate)}</p>
+
+              {/* PROGRESS */}
+              <div className="flex items-center gap-2">
+                <div className="w-full max-w-[120px] h-[20px] border rounded-full overflow-hidden">
+                  <div
+                    className="bg-[#77C2FF] h-full"
+                    style={{ width: `${task.progress || 0}%` }}
+                  />
                 </div>
+                <span className="text-sm">{task.progress ?? 0}%</span>
               </div>
-              <div className="flex gap-[20px] py-[21px] px-[30px] w-[237px]">
+
+              {/* ACTION */}
+              <div className="flex gap-3">
                 <img
                   onClick={() => onEdit(task)}
                   src={pen}
                   alt="Edit"
-                  className="w-[24px] h-[24px] cursor-pointer"
+                  className="w-5 h-5 cursor-pointer"
                 />
                 <img
+                  onClick={() => onDelete(task._id)}
                   src={del}
                   alt="Delete"
-                  className="w-[24px] h-[24px] cursor-pointer"
-                  onClick={() => onDelete(task._id)}
+                  className="w-5 h-5 cursor-pointer"
                 />
               </div>
             </div>

@@ -11,7 +11,7 @@ const Carousel = () => {
 
   return (
     <div className="Carousel font-raccket w-full">
-      <h3 className="font-rackety text-xl sm:text-2xl md:text-[30px] leading-[100%] font-bold">
+      <h3 className="font-rackety text-xl sm:text-2xl md:text-[30px] leading-[100%] font-bold mb-20px">
         Tasks In Progress
       </h3>
       <div className="flex w-full overflow-x-auto scrollbar-hidden scroll-smooth gap-4 sm:gap-6 lg:gap-[33px] pb-4">
@@ -26,7 +26,7 @@ const Carousel = () => {
                 "https://via.placeholder.com/350x150?text=No+Image"
               }
               alt={task.title}
-              className="w-full h-[120px] sm:h-[140px] md:h-[150px] object-cover rounded-[22px]"
+              className="w-full h-[230px] sm:h-[230px] md:h-[200px] object-cover rounded-[22px]"
             />
             <div className="px-4 sm:px-[22px] flex flex-col gap-3 sm:gap-[17px] py-3 sm:py-[17px]">
               <div className="flex justify-between items-center">

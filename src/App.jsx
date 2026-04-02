@@ -16,6 +16,7 @@ import DashBoard from "./Pages/DashBoard";
 import DefaultPage from "./Pages/DefaultPage";
 import AuthProvider from "./context/authContext";
 import TasksProvider from "./context/tasksContext";
+import AuthCallback from "./Pages/AuthCallback";
 
 function App() {
   return (
@@ -24,8 +25,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<Signin />} />
+
             <Route path="/forgetpassword" element={<ForgetPassword />} />
             <Route path="/codeverification" element={<CodeVerification />} />
             <Route path="/createpassword" element={<CreatePassword />} />

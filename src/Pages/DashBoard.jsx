@@ -18,10 +18,16 @@ const DashBoard = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("all");
 
   const { tasks, getAllTasks, createTask, updateTask, deleteTask } =
     useContext(TasksContext);
   const { user } = useContext(AuthContext);
+
+  const filteredTasks = tasks.filter((task) => {
+    if (priorityFilter === "all") return true;
+    return task.priority === priorityFilter;
+  });
 
   useEffect(() => {
     getAllTasks();
@@ -69,10 +75,19 @@ const DashBoard = () => {
             All Tasks
           </h2>
 
-          <div className="flex items-center gap-2 border px-3 py-2 rounded-full">
-            <span className="text-sm md:text-base">Priority</span>
-            <img src={arr} alt="" className="w-4 h-4" />
+          <div className="relative group">
+            <button className="flex items-center gap-2 border px-3 py-2 rounded-full hover:bg-gray-100">
+              <span className="text-sm md:text-base capitalize">{priorityFilter}</span>
+              <img src={arr} alt="" className="w-4 h-4" />
+            </button>
+            <div className="absolute top-full right-0 mt-2 bg-white border rounded-lg shadow-lg min-w-[120px] z-20 hidden group-hover:block">
+              <button onClick={() => setPriorityFilter('all')} className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-t-lg">All</button>
+              <button onClick={() => setPriorityFilter('high')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">High</button>
+              <button onClick={() => setPriorityFilter('medium')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Medium</button>
+              <button onClick={() => setPriorityFilter('low')} className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-b-lg">Low</button>
+            </div>
           </div>
+
         </div>
 
         {/* Table Container */}
@@ -82,12 +97,17 @@ const DashBoard = () => {
             <p>Name</p>
             <p>Priority</p>
             <p>Date</p>
-            <p>Status</p>
+            <p>Progress</p>
             <p>Action</p>
           </div>
 
           {/* Task Rows */}
-          <TaskRow tasks={tasks} onEdit={handleEdit} onDelete={handleDelete} />
+
+          <TaskRow
+            tasks={filteredTasks}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row justify-between items-center p-4 text-sm">
